@@ -24,7 +24,7 @@ class Reversi(object):
         print('--------------------------')
         for i in range(8):
                 for j in range(8):
-                    print('|', end='')
+                    print('|', end = '')
 
                     if self.cells[i][j] == WHITE :
                         print('○ ', end = '')
@@ -36,17 +36,27 @@ class Reversi(object):
                 print('|')
         print('--------------------------')
 
+# columnが行、rowが列
 
     # 置く石の周囲を検索するメソッド
     def check(self, row, column, color):
         # NONE以外ならば、False
         if self.cells[column][row] != NONE :
             return False
-        
-
-
-
-        return False
+        tmp = []
+        for i in range(8):
+            for j in range(8):
+                if 0 <= column+i < 8 and 0 <= row+j < 8 :
+                    if self.cells[column + i][row+j] == color :
+                        if tmp != [] :
+                            # 石をひっくり返す処理
+                            print('石をひっくり返す処理')
+                    elif self.cells[column + i][row+j] == NONE :
+                        break
+                    else :
+                        # 獲得できるかもしれない石を一時保存
+                        tmp.append((column+i, row+j))
+                    
 
     # 石を置くメソッド
     def put(self, row, column):
