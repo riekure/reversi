@@ -36,43 +36,64 @@ class Reversi(object):
                 print('|')
         print('--------------------------')
 
-# columnが行、rowが列
+# xが行、yが列
 
     # 置く石の周囲を検索するメソッド
-    def check(self, row, column, color):
-        # NONE以外ならば、False
-        if self.cells[column][row] != NONE :
+    # def check(self, y, x, color):
+    #     # NONE以外ならば、False
+    #     if self.cells[x][y] != NONE :
+    #         return False
+    #     tmp = []
+    #     for i in range(8):
+    #         for j in range(8):
+    #             if 0 <= x+i < 8 and 0 <= y+j < 8 :
+    #                 if self.cells[x + i][y+j] == color :
+    #                     if tmp != [] :
+    #                         # 石をひっくり返す処理
+    #                         print('石をひっくり返す処理')
+    #                 elif self.cells[x + i][y+j] == NONE :
+    #                     break
+    #                 else :
+    #                     # 獲得できるかもしれない石を一時保存
+    #                     tmp.append((x+i, y+j))
+
+    def check(x, y, dir_x, dir_y, color) :
+
+        # 置く石の色
+        put_stone = WHITE if color == WHITE else BLACK
+
+        # 隣接する場所へ
+        x += dir_x
+        y += dir_y
+
+        # 盤面外ならばfalse
+        if x < 0 or 8 <= x or y < 0 or 8 <= y :
             return False
-        tmp = []
-        for i in range(8):
-            for j in range(8):
-                if 0 <= column+i < 8 and 0 <= row+j < 8 :
-                    if self.cells[column + i][row+j] == color :
-                        if tmp != [] :
-                            # 石をひっくり返す処理
-                            print('石をひっくり返す処理')
-                    elif self.cells[column + i][row+j] == NONE :
-                        break
-                    else :
-                        # 獲得できるかもしれない石を一時保存
-                        tmp.append((column+i, row+j))
-                    
+        
+        # 置く石と隣が一緒だったならばFalse
+        if self.cells[x][y] == put_stone :
+            return False
+        
+        # 隣が空白ならばFalse
+        if self.cells[x][y] == NONE :
+            return False
+        
+        # さらに隣を調べる
+        x += dir_x
+        y += dir_y
+
 
     # 石を置くメソッド
-    def put(self, row, column):
-        if self.cells[column][row] == NONE :
-            if self.check(row, column, WHITE) == True :
-                self.cells[column][row] = WHITE
+    def put(self, y, x):
+        if self.cells[x][y] == NONE :
+            if self.check(y, x, WHITE) == True :
+                self.cells[x][y] = WHITE
         else :
             print('すでに石が置かれています。')
-
-for i in search_list:
-    for j in i :
-        print(j)
 
 board = Reversi()
 board.call()
 # while True :
-row, column = [int(i) for i in input().split()]
-board.put(row, column)
+y, x = [int(i) for i in input().split()]
+board.put(y, x)
 board.call()
