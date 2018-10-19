@@ -4,7 +4,7 @@ WHITE = 1
 BLACK = 2
 
 # 周囲8方向の座標
-search_list = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1 -1]]
+search_list = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]
 
 # リバーシクラス
 class Reversi(object):
@@ -12,6 +12,7 @@ class Reversi(object):
     def __init__(self):
         # 盤面を初期化
         self.cells = [[0 for i in range(8)] for j in range(8)]
+        self.player = BLACK
 
         # 石を初期配置する
         self.cells[3][3] = BLACK
@@ -51,7 +52,7 @@ class Reversi(object):
         
         # 8方向チェック
         for dir in search_list :
-            if self.check_dir(x, y, dir[0], dir[1]) :
+            if self.check_dir(x, y, dir[0], dir[1], self.player) :
                 return True
         
         # 8方向すべて該当なしならばFalse
@@ -60,9 +61,6 @@ class Reversi(object):
 
     # 石が打てるか探索するメソッド②
     def check_dir(self, x, y, dir_x, dir_y, color) :
-
-        # 置く石の色
-        put_stone = WHITE if color == WHITE else BLACK
 
         # 隣接する場所へ
         x += dir_x
@@ -73,7 +71,7 @@ class Reversi(object):
             return False
         
         # 置く石と隣が一緒だったならばFalse
-        if self.cells[x][y] == put_stone :
+        if self.cells[x][y] == color :
             return False
         
         # 隣が空白ならばFalse
@@ -90,7 +88,7 @@ class Reversi(object):
             if self.cells[x][y] == NONE :
                 return False
             # 自分の石があればTrue
-            if self.cells[x][y] == put_stone :
+            if self.cells[x][y] == color :
                 return True
             
             x += dir_x
@@ -100,15 +98,24 @@ class Reversi(object):
         return False
 
     # 石を置くメソッド
-    def put(self, y, x):
-        if self.cells[x][y] == NONE :
-                self.cells[x][y] = WHITE
+    def put(self, x, y):
+
+        if self.check(x, y) :
+            self.cells[x][y] = self.player
+            
+            if self.player == BLACK :
+                self.player = WHITE
+            else :
+                self.player = BLACK
+
         else :
-            print('すでに石が置かれています。')
+            print(self.player)
+            print('指定された場所に石は置けません。')
 
 board = Reversi()
 board.call()
-# while True :
-y, x = [int(i) for i in input().split()]
-board.put(y, x)
-board.call()
+
+while True :
+    y, x = [int(i) for i in input().split()]
+    board.put(x, y)
+    board.call()
