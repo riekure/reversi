@@ -10,7 +10,7 @@ search_list = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, 
 class Reversi(object):
 # 盤面を生成するコンストラクタ
     def __init__(self):
-        # 盤面を初期化
+        # 盤面を初期化j
         self.cells = [[0 for i in range(8)] for j in range(8)]
         self.player = BLACK
 
@@ -36,8 +36,6 @@ class Reversi(object):
 
                 print('|')
         print('--------------------------')
-
-# xが行、yが列
 
     # 石が打てるか探索するメソッド①
     def check(self, x, y) :
@@ -97,11 +95,25 @@ class Reversi(object):
         # 相手の石しかないならFalse
         return False
 
+
+    # 石をひっくり返すメソッド
+    def reverse(self, x, y, dir_x, dir_y, color) :
+        x += dir_x
+        y += dir_y
+        while self.cells[x][y] != color and self.cells[x][y] != NONE :
+            # ひっくり返す
+            self.cells[x][y] = color
+            x += dir_x
+            y += dir_y
+
+
     # 石を置くメソッド
     def put(self, x, y):
 
         if self.check(x, y) :
             self.cells[x][y] = self.player
+            for dir in search_list :
+                self.reverse(x, y, dir[0], dir[1], self.player)
             
             if self.player == BLACK :
                 self.player = WHITE
@@ -112,10 +124,12 @@ class Reversi(object):
             print(self.player)
             print('指定された場所に石は置けません。')
 
+# メイン処理
 board = Reversi()
 board.call()
 
 while True :
+    # xが行、yが列
     y, x = [int(i) for i in input().split()]
     board.put(x, y)
     board.call()
