@@ -4,7 +4,7 @@ WHITE = 1
 BLACK = 2
 
 # 周囲8方向の座標
-search_list = [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]]
+search_list = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1 -1]]
 
 # リバーシクラス
 class Reversi(object):
@@ -38,26 +38,28 @@ class Reversi(object):
 
 # xが行、yが列
 
-    # 置く石の周囲を検索するメソッド
-    # def check(self, y, x, color):
-    #     # NONE以外ならば、False
-    #     if self.cells[x][y] != NONE :
-    #         return False
-    #     tmp = []
-    #     for i in range(8):
-    #         for j in range(8):
-    #             if 0 <= x+i < 8 and 0 <= y+j < 8 :
-    #                 if self.cells[x + i][y+j] == color :
-    #                     if tmp != [] :
-    #                         # 石をひっくり返す処理
-    #                         print('石をひっくり返す処理')
-    #                 elif self.cells[x + i][y+j] == NONE :
-    #                     break
-    #                 else :
-    #                     # 獲得できるかもしれない石を一時保存
-    #                     tmp.append((x+i, y+j))
+    # 石が打てるか探索するメソッド①
+    def check(self, x, y) :
 
-    def check(x, y, dir_x, dir_y, color) :
+        # 盤面外ならばFalse
+        if x >= 8 or y >= 8 :
+            return False
+        
+        # すでに石があったらFalse
+        if self.cells[x][y] != NONE :
+            return False
+        
+        # 8方向チェック
+        for dir in search_list :
+            if self.check_dir(x, y, dir[0], dir[1]) :
+                return True
+        
+        # 8方向すべて該当なしならばFalse
+        return False
+
+
+    # 石が打てるか探索するメソッド②
+    def check_dir(self, x, y, dir_x, dir_y, color) :
 
         # 置く石の色
         put_stone = WHITE if color == WHITE else BLACK
@@ -82,11 +84,24 @@ class Reversi(object):
         x += dir_x
         y += dir_y
 
+        # 隣に石があるならばループし続ける
+        while x >= 0 and x < 8 and y >= 0 and y < 8 :
+            # 空白ならば挟めないのでFalse
+            if self.cells[x][y] == NONE :
+                return False
+            # 自分の石があればTrue
+            if self.cells[x][y] == put_stone :
+                return True
+            
+            x += dir_x
+            y += dir_y
+
+        # 相手の石しかないならFalse
+        return False
 
     # 石を置くメソッド
     def put(self, y, x):
         if self.cells[x][y] == NONE :
-            if self.check(y, x, WHITE) == True :
                 self.cells[x][y] = WHITE
         else :
             print('すでに石が置かれています。')
